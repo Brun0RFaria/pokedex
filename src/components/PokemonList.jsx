@@ -1,23 +1,6 @@
 import PokemonCard from './PokemonCard'
 import { useState } from 'react'
-
-const POKEMONS = [
-   {
-     id: 25,
-     name: 'Pikachu',
-     type: 'Elétrico',
-     imageUrl:
-       'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png',
-   },
-  {
-     id: 1,
-     name: 'Bulbasaur',
-     type: 'Grama / Veneno',
-     imageUrl:
-     'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png',
-   },
-]
-
+import { POKEMONS } from '../data/pokemons'
 
 function PokemonList() {
 
