@@ -1,9 +1,53 @@
 import { Link, useParams } from 'react-router-dom'
-import { getPokemonById } from '../data/pokemons'
+import { useState, useEffect } from 'react'
+import { fetchPokemonById } from '../services/pokemonApi'
 
 function PokemonDetailPage() {
-  const { id } = useParams()
-  const pokemon = getPokemonById(id)
+const { id } = useParams()
+const [pokemon, setPokemon] = useState(null)  // null, nao []
+const [loading, setLoading] = useState(true)
+const [error,   setError]   = useState(null)
+
+useEffect(() => {
+  let cancelled = false
+
+  async function loadPokemon() {
+    try {
+      setLoading(true)
+      setError(null)
+      setPokemon(null)         // limpa antes de buscar novo id
+      const data = await fetchPokemonById(id)
+      if (!cancelled) setPokemon(data)
+    } catch (err) {
+      if (!cancelled) setError(err.message ?? 'Erro ao carregar.')
+    } finally {
+      if (!cancelled) setLoading(false)
+    }
+  }
+
+  loadPokemon()
+  return () => { cancelled = true }
+}, [id])  // <- roda de novo se o id mudar
+if (loading)  return <p>Carregando Pokémon...</p>
+if (error) {
+  return (
+    <div>
+      <p role="alert">{error}</p>
+
+      <button onClick={loadPokemon}>
+        Tentar de novo
+      </button>
+    </div>
+  )
+}
+if (!pokemon) return (
+  <>
+    <p>Pokémon "{id}" não encontrado na API.</p>
+    <Link to="/pokemon">Voltar ao catálogo</Link>
+  </>
+)
+// ... renderiza os dados normalmente
+
 
   if (!pokemon) {
     return (
